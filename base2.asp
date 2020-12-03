@@ -55,6 +55,33 @@ RegionalFuncionario()
           <i class="fas fa-home"></i>
           <span>Escala Final</span></a>
       </li>  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEscPar"
+          aria-expanded="true" aria-controls="collapseEscPar">
+          <i class="fab fa-buffer"></i>
+          <span>Escalas Parciais</span>
+        </a>
+        <div id="collapseEscPar" class="collapse" aria-labelledby="headingEscPar" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Gerenciamento de Escalas</h6>
+            <a class="collapse-item" href="lista_eps.asp">Lista de escalas parciais</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTable" aria-expanded="true"
+          aria-controls="collapseTable">
+          <i class="fas fa-filter"></i>
+          <span>Relatório</span>
+        </a>
+        <div id="collapseTable" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Relatório de Escalas</h6>
+            <a class="collapse-item" href="relatorio.asp">Visualizar</a>
+           
+          </div>
+        </div>
+      </li>
       <hr class="sidebar-divider">
       <div class="version" id="version-ruangadmin"></div>
     </ul>
@@ -76,7 +103,11 @@ RegionalFuncionario()
               </a>
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#logoutModal">
+                 <a class="dropdown-item" href="http://intranet.adapec.to.gov.br/intranet/sistemas.asp" >
+                  <i class="fas fa-reply-all  fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Sistemas Intranet
+                </a>
+                <a class="dropdown-item" href="http://intranet.adapec.to.gov.br/intranet" >
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                   Logout
                 </a>

@@ -15,7 +15,7 @@ if autorizado = true then%>
   <!--#include file="base2.asp"-->
 <%end if%>
 <%
-dim nomeFunc, regionalFunc, IdPrimeiraEscala, IdSegundaEscala, existeCad, idBarreira, existeCadEscala
+dim nomeFunc, regionalFunc, IdPrimeiraEscala, IdSegundaEscala, existeCad, idBarreira, existeCadEscala, existeJusPrim, existeJusSeg, jusPrim, jusSeg, rsPrim, rsSeg
   municipioId = request.form("municipio")
   descricao = request.form("descricao")
   resp = request("resp")
@@ -42,7 +42,7 @@ function RegionalFuncionario()
 RegionalFuncionario()
 
 function RetornaIdEscalas()
-	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"'")
+	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' and Status='1'")
 	  do while not objSql.EOF
 		  if objSql("EscalaDesc") = "1" Then
 			  IdPrimeiraEscala = objSql("Id")
@@ -89,7 +89,47 @@ function RetornaIdEscalas()
   end function 
 
 verificaCadastroEscala()
-  
+
+function verificaJus()
+  set rs4 = conn.execute("SELECT COUNT (*) AS qt FROM SEBV_Justificativa WHERE IdEscalaParcial = '"&IdPrimeiraEscala& "'AND IdBarreira = '"&IdBarreira&"'")
+  set rs5 = conn.execute("SELECT COUNT (*) AS qt FROM SEBV_Justificativa WHERE IdEscalaParcial = '"&IdSegundaEscala& "'AND IdBarreira = '"&IdBarreira&"'")
+    if rs4("qt") > 0 then
+      existeJusPrim = true
+    elseIf rs4("qt") = 0 then
+      existeJusPrim = false
+    elseIf rs5("qt") > 0 then
+      existeJusSeg = true
+    elseIf rs5("qt") = 0 then
+      existeJusSeg = false
+    else
+    end if    
+    rs4.close
+    rs5.close
+    set rs4 = Nothing
+    set rs5 = Nothing
+end function
+verificaJus()
+
+function retornaJus()
+
+  set rsPrim = conn.execute("SELECT TOP 1 * FROM SEBV_Justificativa WHERE IdEscalaParcial = '"&IdPrimeiraEscala&"' AND IdBarreira = '"&idBarreira&"'")
+  set rsSeg = conn.execute("SELECT TOP 1 * FROM SEBV_Justificativa WHERE IdEscalaParcial = '"&IdSegundaEscala&"' AND IdBarreira = '"&idBarreira&"'")
+  jusPrim = false
+  jusSeg = false
+  if not rsPrim.EOF then
+    if rsPrim("IdBarreira") <> "" then
+      jusPrim = true
+    end if
+  end if
+  if not rsSeg.EOF then
+    if rsSeg("IdBarreira") <> "" then
+      jusSeg = true
+    else 
+    end if
+  end if
+end function
+retornaJus()
+
 %>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <script>
@@ -148,6 +188,7 @@ function avancar(){
 }
 
 </script>
+
 <%if existeCadEscala = true then%>
 <div class="col-lg-10">
  <div class="card">
@@ -158,7 +199,11 @@ function avancar(){
       <div class="alert alert-danger alert-dismissible" role="alert">
         <h6><i class="fas fa-ban"></i><b> Opa!</b></h6>
         Já existe uma escala cadastrada para essa barreira no mês de <%=UCASE(session("mesRef"))%>!<br>
-        <a href="visualiza.asp?idb=<%=idBarreira%>&ide1=<%=IdPrimeiraEscala%>&ide2=<%=IdSegundaEscala%>" target="_blank" class="btn btn-primary btn-icon-split">
+        <%if autorizado = false then%>
+          <a href="visualiza.asp?idb=<%=idBarreira%>&ide1=<%=IdPrimeiraEscala%>&ide2=<%=IdSegundaEscala%>" target="_blank" class="btn btn-primary btn-icon-split">
+        <%else%>
+        <a href="visualizaAdmin.asp?idb=<%=idBarreira%>&ide1=<%=IdPrimeiraEscala%>&ide2=<%=IdSegundaEscala%>" target="_blank" class="btn btn-primary btn-icon-split">
+        <%end if%>
         <span class="icon text-white-50">
           <i class="fas fa-arrow-right"></i>
         </span>
@@ -170,6 +215,68 @@ function avancar(){
 </div>
 
 <%else%>
+<!-- Modal Justificativa 1 -->
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle1">Justificativa</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <form id="formjus" name="formjus" method="POST" action="crud_justificativa.asp">
+      <input name="numjus" type="hidden" value="1" id="numjus"/>
+        <input name="idbarjus" type="hidden" value="<%=idBarreira%>" id="idbarjus"/>
+        <input name="idepjus" type="hidden" value="<%=IdPrimeiraEscala%>" id="idepjus"/>
+        <input name="situacaojus" type="hidden" value="Vinculado" id="situacaojus"/>
+        <input name="operacao" type="hidden" value="1" id="operacao"/>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea2">Digite aqui</label>
+          <textarea class="form-control" name="justificativa" id="justificativa" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modal Justificativa 2 -->
+<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle2" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle2">Justificativa</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <form id="formjus" name="formjus" method="POST" action="crud_justificativa.asp">
+        <input name="numjus" type="hidden" value="2" id="numjus"/>
+        <input name="idbarjus" type="hidden" value="<%=idBarreira%>" id="idbarjus"/>
+        <input name="idepjus" type="hidden" value="<%=IdSegundaEscala%>" id="idepjus"/>
+        <input name="situacaojus" type="hidden" value="Vinculado" id="situacaojus"/>
+        <input name="operacao" type="hidden" value="1" id="operacao"/>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea2">Digite aqui</label>
+          <textarea class="form-control" name="justificativa" id="justificativa" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
  <div class="col">
   <div class="card">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -185,6 +292,7 @@ function avancar(){
         <input name="operacao" type="hidden" value="" id="operacao"/>
         <input name="idserv" type="hidden" value="" id="idserv"/>
       </form>
+
       <table class="table align-items-center table-flush table-sm" id="dataTable" >
         <thead class="thead-light">
           <tr>
@@ -208,12 +316,20 @@ function avancar(){
             <td ><%=trim(ObjRst("MatriculaNova"))%>-<%=trim(ObjRst("VinculoMatricula"))%></td>
             <td ><%=ObjRst("RegionalDesc")%></td>              
             <td>
+            <%if jusPrim = false then%>
               <button class="btn btn-info btn-sm"   style="font-size: 0.7rem;" onClick="enviar(<%=IdPrimeiraEscala%>, <%=matricula%>, <%=vin%>); return false;">
                 <i class="m-1 font-weight-bold text-light">1°</i>
               </button>
+            <%else
+              end if
+            %>
+             <%if jusSeg = false then%>
               <button class="btn btn-warning btn-sm" style="font-size: 0.7rem;"  onClick="enviar(<%=IdSegundaEscala%>,<%=matricula%>, <%=vin%>); return false;">
                 <i class="m-1 font-weight-bold text-light">2°</i>
               </button>
+              <%else
+              end if
+            %>
             </td>
         </tr>
       <% 
@@ -226,10 +342,29 @@ function avancar(){
       </tbody>
       </table>
     </div>
+  </div>
+  
     <div class="table-responsive p-3">
+    <% if jusPrim =  false and rs1.EOF THEN%>
+     <button type="button" class="btn btn-warning float-right" data-toggle="modal" data-target="#exampleModalCenter1"
+        id="#modalCenter1">Justificar 1° Escala</button>
+         <% else
+      END IF
+    %>
       <div class="card-header">
         <h6 class="m-0 font-weight-bold text-primary text-align-center">Servidores da 1° Escala</h6>
       </div>
+
+    <%if jusPrim = true then%>
+      <div class="alert alert-light" role="alert" >
+        <div class=" m-0 font-weight-bold">
+        Justificativa cadastrada: </div>
+        <%=rsPrim("Descricao")%>        
+        <a href="crud_justificativa.asp?idJus=<%=rsPrim("Id")%>&idb=<%=idBarreira%>&operacao=2"  style="font-size: 0.5rem;" class="btn btn-danger btn-sm float-right" alt="Excluir justificativa">
+              <i class="fas fa-trash fa-lg"></i>
+          </a>
+      </div>
+    <%else%>
       <table class="table align-items-center table-flush table-sm" id="dataTable" >
         <thead class="thead-light">
           <tr>
@@ -243,15 +378,15 @@ function avancar(){
 	   		Do while not rs1.EOF 
 		    cont =cont+1
 	    %>
-            <tr>
-              	<td ><%=rs1("Nome")%></td>
-                <td ><%=trim(rs1("Matricula"))%>-<%=trim(rs1("VinculoMat"))%></td>            
-                <td>
-                <a href="crud_servidor.asp?id=<%=rs1("Id")%>&idb=<%=idBarreira%>&operacao=2"  style="font-size: 0.5rem;" class="btn btn-danger btn-sm" alt="Desativar Rota">
-                    <i class="fas fa-trash fa-lg"></i>
-                </a>
-                </td>
-            </tr>
+        <tr>
+          <td ><%=rs1("Nome")%></td>
+          <td ><%=trim(rs1("Matricula"))%>-<%=trim(rs1("VinculoMat"))%></td>            
+          <td>
+          <a href="crud_servidor.asp?id=<%=rs1("Id")%>&idb=<%=idBarreira%>&operacao=2"  style="font-size: 0.5rem;" class="btn btn-danger btn-sm" alt="Desativar Rota">
+              <i class="fas fa-trash fa-lg"></i>
+          </a>
+          </td>
+        </tr>
       <% 
 				rs1.Movenext()
 				loop 
@@ -260,10 +395,27 @@ function avancar(){
       </tbody>
       </table> 
     </div>
+    <%end if%>
  <div class="table-responsive p-3">
+  <% if jusSeg =  false  and rs2.EOF THEN%>
+  <button type="button" class="btn btn-warning float-right" data-toggle="modal" data-target="#exampleModalCenter2"
+      id="#modalCenter2">Justificar 2° Escala</button>
+      <% else
+      END IF
+      %>
       <div class="card-header">
         <h6 class="m-0 font-weight-bold text-primary text-align-center">Servidores da 2° Escala </h6>
       </div>
+      <%if jusSeg = true then%>
+      <div class="alert alert-light" role="alert" >
+        <div class=" m-0 font-weight-bold">
+        Justificativa cadastrada: </div>
+        <%=rsSeg("Descricao")%>        
+        <a href="crud_justificativa.asp?idJus=<%=rsSeg("Id")%>&idb=<%=idBarreira%>&operacao=2"  style="font-size: 0.5rem;" class="btn btn-danger btn-sm float-right" alt="Excluir justificativa">
+              <i class="fas fa-trash fa-lg"></i>
+          </a>
+      </div>
+    <%else%>
       <table class="table align-items-center table-flush table-sm" id="dataTable" >
         <thead class="thead-light">
           <tr>
@@ -293,6 +445,7 @@ function avancar(){
 			  %>
       </tbody>
       </table><br><br>
+       <%end if%>
     <div class="col text-center">
       <button class="btn btn-primary btn-icon-split" onClick="avancar(); return false;">
         <span class="icon text-white-50">

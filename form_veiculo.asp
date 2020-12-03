@@ -16,7 +16,6 @@ if autorizado = true then%>
   <!--#include file="base2.asp"-->
 <%end if%>
 <%
-  session("idUsu") = trim(request("idUsu"))
   municipioId = request.form("municipio")
   descricao = request.form("descricao")
   resp = request("resp")

@@ -8,7 +8,6 @@ if session("idUsu") = "1162756-2" OR session("idUsu") = "11186178-1" OR session(
 else
   autorizado = false
 end if
-
 if autorizado = true then%>
   <!--#include file="base.asp"-->
 <%elseIf autorizado = false then %>
@@ -21,8 +20,6 @@ dim nomeFunc, regionalFunc, IdPrimeiraEscala, IdSegundaEscala, existeCad, idBarr
   descricao = request.form("descricao")
   resp = request("resp")
   idBarreira = request("idb")
-  session("idUsu") = trim(request.QueryString("idUsu"))
-
 'BUSCAR REGIONAL DO FUNCIONÁRIO
 function RegionalFuncionario()
       Set objSql = conn.Execute("SELECT Nome, RegionalDesc FROM CadFunc AS F INNER JOIN Municipio AS M ON F.LotacaoOrigem=M.MunicipioId INNER JOIN Regional AS R ON  M.MunicipioRegionalId = R.RegionalId WHERE Matricula='"&session("idUsu")&"'")
@@ -170,13 +167,51 @@ function avancar(){
           <label for="data">Dia da Escala:</label>
           <input type="date" class="form-control form-control-sm" name="data" id="data" required>
         </div>
-        <div class="form-group mr-4">
-          <label for="horaIni">Hora de inicio:</label>
-          <input type="time" class="form-control form-control-sm" name="horaIni" id="horaIni" required>
+        <div class="form-group mr-2">
+          <label for="horaIni">Hora inicio:</label>
+           <select class="select2-single form-control form-control-sm" name="horaIni" id="horaIni" required> 
+            <option value=""  > ... </option>
+            <option value="05:00"> 05:00 </option>
+            <option value="06:00"> 06:00 </option>
+            <option value="07:00"> 07:00 </option>
+            <option value="08:00"> 08:00 </option>
+            <option value="09:00"> 09:00 </option>
+            <option value="10:00"> 10:00 </option>
+            <option value="11:00"> 11:00 </option>
+            <option value="12:00"> 12:00 </option>
+            <option value="13:00"> 13:00 </option>
+            <option value="14:00"> 14:00 </option>
+            <option value="15:00"> 15:00 </option>
+            <option value="16:00"> 16:00 </option>
+            <option value="17:00"> 17:00 </option>
+            <option value="18:00"> 18:00 </option>
+            <option value="19:00"> 19:00 </option>
+            <option value="20:00"> 20:00 </option>
+            <option value="21:00"> 21:00 </option>
+          </select>
         </div>
         <div class="form-group mr-4">
-          <label for="horaFin">Hora de término:</label>
-          <input type="time" class="form-control form-control-sm" name="horaFin" id="horaFin" required >
+          <label for="horaFin">Hora término:</label>
+          <select class="select2-single form-control form-control-sm" name="horaFin" id="horaFin" required> 
+            <option value=""  > ... </option>
+            <option value="05:00"> 05:00 </option>
+            <option value="06:00"> 06:00 </option>
+            <option value="07:00"> 07:00 </option>
+            <option value="08:00"> 08:00 </option>
+            <option value="09:00"> 09:00 </option>
+            <option value="10:00"> 10:00 </option>
+            <option value="11:00"> 11:00 </option>
+            <option value="12:00"> 12:00 </option>
+            <option value="13:00"> 13:00 </option>
+            <option value="14:00"> 14:00 </option>
+            <option value="15:00"> 15:00 </option>
+            <option value="16:00"> 16:00 </option>
+            <option value="17:00"> 17:00 </option>
+            <option value="18:00"> 18:00 </option>
+            <option value="19:00"> 19:00 </option>
+            <option value="20:00"> 20:00 </option>
+            <option value="21:00"> 21:00 </option>
+          </select>
         </div>
         <div class="form-group mr-4">
         <label for="select2Single">Rota:</label>
@@ -260,15 +295,53 @@ function avancar(){
         <div class="form-row">
         <div class="form-group mr-2 ">
           <label for="data">Dia da Escala:</label>
-          <input type="date" class="form-control form-control-sm" name="data" id="Data" required>
+          <input type="date" class="form-control form-control-sm" name="data" id="data" required>
         </div>
         <div class="form-group mr-4">
-          <label for="horaIni">Hora de inicio:</label>
-          <input type="time" class="form-control form-control-sm" name="horaIni" id="horaIni" required >
+          <label for="horaIni">Hora inicio:</label>
+          <select class="select2-single form-control form-control-sm" name="horaIni" id="horaIni" required> 
+            <option value=""  > ... </option>
+            <option value="05:00"> 05:00 </option>
+            <option value="06:00"> 06:00 </option>
+            <option value="07:00"> 07:00 </option>
+            <option value="08:00"> 08:00 </option>
+            <option value="09:00"> 09:00 </option>
+            <option value="10:00"> 10:00 </option>
+            <option value="11:00"> 11:00 </option>
+            <option value="12:00"> 12:00 </option>
+            <option value="13:00"> 13:00 </option>
+            <option value="14:00"> 14:00 </option>
+            <option value="15:00"> 15:00 </option>
+            <option value="16:00"> 16:00 </option>
+            <option value="17:00"> 17:00 </option>
+            <option value="18:00"> 18:00 </option>
+            <option value="19:00"> 19:00 </option>
+            <option value="20:00"> 20:00 </option>
+            <option value="21:00"> 21:00 </option>
+          </select>
         </div>
         <div class="form-group mr-4">
-          <label for="horaFin">Hora de término:</label>
-          <input type="time" class="form-control form-control-sm" name="horaFin" id="horaFin" required >
+          <label for="horaFin">Hora término:</label>
+          <select class="select2-single form-control form-control-sm" name="horaFin" id="horaFin" required> 
+            <option value=""  > ... </option>
+            <option value="05:00">05:00</option>
+            <option value="06:00">06:00</option>
+            <option value="07:00"> 07:00 </option>
+            <option value="08:00"> 08:00 </option>
+            <option value="09:00"> 09:00 </option>
+            <option value="10:00"> 10:00 </option>
+            <option value="11:00"> 11:00 </option>
+            <option value="12:00"> 12:00 </option>
+            <option value="13:00"> 13:00 </option>
+            <option value="14:00"> 14:00 </option>
+            <option value="15:00"> 15:00 </option>
+            <option value="16:00"> 16:00 </option>
+            <option value="17:00"> 17:00 </option>
+            <option value="18:00"> 18:00 </option>
+            <option value="19:00"> 19:00 </option>
+            <option value="20:00"> 20:00 </option>
+            <option value="21:00"> 21:00 </option>
+          </select>
         </div>
         <div class="form-group mr-4">
         <label for="select2Single">Rota:</label>

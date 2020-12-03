@@ -8,26 +8,8 @@ IdPrimeiraEscala = request("ide1")
 IdSegundaEscala = request("ide2")
 idBarreira = request("idb")
 
-if IdPrimeiraEscala = "" and IdSegundaEscala ="" then 
-    mesRef = request("mesRef")
-    RetornaIdEscalas()
-else
-end if
-
-strSQL = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdPrimeiraEscala&"' AND IdBarreiraVol = '"&idBarreira&"'  AND Situacao = 'Fechado' AND RegionalDesc = '"&session("regionalFunc")&"' ORDER BY DiaEscala"
-set ObjRst = conn.Execute(strSQL)
-strSQL2 = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdSegundaEscala&"' AND IdBarreiraVol = '"&idBarreira&"' AND Situacao = 'Fechado' AND RegionalDesc = '"&session("regionalFunc")&"' ORDER BY DiaEscala"
-set ObjRst2 = conn.Execute(strSQL2)
-strSql1 = "SELECT sb.Id, sb.Matricula, sb.VinculoMat, sb.Situacao, f.Nome, r.RegionalDesc FROM SEBV_ServidoresEsc as sb INNER JOIN CadFunc as f on sb.Matricula = f.MatriculaNova INNER JOIN Municipio as M ON f.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId  WHERE IdEscalaParcial='"&IdPrimeiraEscala&"' AND IdBarreira ='"&idBarreira&"'"
-set rs1 = conn.Execute(strSql1)
-strSql2 = "SELECT sb.Id, sb.Matricula, sb.VinculoMat, sb.Situacao, f.Nome, r.RegionalDesc FROM SEBV_ServidoresEsc as sb INNER JOIN CadFunc as f on sb.Matricula = f.MatriculaNova INNER JOIN Municipio as M ON f.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId  WHERE IdEscalaParcial='"&IdSegundaEscala&"' AND IdBarreira ='"&idBarreira&"'"
-set rs2 = conn.Execute(strSql2)
-strSql3 = "SELECT * FROM SEBV_VeiculoEscala AS Ve INNER JOIN SEBV_Veiculo AS V ON Ve.IdVeiculo = V.Id WHERE IdEscalaParcial='"&IdPrimeiraEscala&"' AND IdBarreiraVol='"&idBarreira&"'"
-set rs3 = conn.Execute(strSql3)
-veiculo = trim(rs3("Modelo"))&" / "&trim(rs3("Placa"))
-
 function RetornaIdEscalas()
-	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&mesRef&"'")
+	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&mesRef&"' and Status='1'")
 	  do while not objSql.EOF
 		  if objSql("EscalaDesc") = "1" Then
 			  IdPrimeiraEscala = objSql("Id")
@@ -41,7 +23,67 @@ function RetornaIdEscalas()
 	  objSql.Close
 	  Set objSql = Nothing
       end function
-      
+
+
+if IdPrimeiraEscala = "" and IdSegundaEscala ="" then 
+    mesRef = request("mesRef")
+    RetornaIdEscalas()
+else
+end if
+
+strSQL = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdPrimeiraEscala&"' AND IdBarreiraVol = '"&idBarreira&"'  AND Situacao = 'Fechado'  ORDER BY DiaEscala"
+set ObjRst = conn.Execute(strSQL)
+strSQL2 = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdSegundaEscala&"' AND IdBarreiraVol = '"&idBarreira&"' AND Situacao = 'Fechado'  ORDER BY DiaEscala"
+set ObjRst2 = conn.Execute(strSQL2)
+strSql1 = "SELECT sb.Id, sb.Matricula, sb.VinculoMat, sb.Situacao, f.Nome, r.RegionalDesc FROM SEBV_ServidoresEsc as sb INNER JOIN CadFunc as f on sb.Matricula = f.MatriculaNova INNER JOIN Municipio as M ON f.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId  WHERE IdEscalaParcial='"&IdPrimeiraEscala&"' AND IdBarreira ='"&idBarreira&"'"
+set rs1 = conn.Execute(strSql1)
+strSql2 = "SELECT sb.Id, sb.Matricula, sb.VinculoMat, sb.Situacao, f.Nome, r.RegionalDesc FROM SEBV_ServidoresEsc as sb INNER JOIN CadFunc as f on sb.Matricula = f.MatriculaNova INNER JOIN Municipio as M ON f.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId  WHERE IdEscalaParcial='"&IdSegundaEscala&"' AND IdBarreira ='"&idBarreira&"'"
+set rs2 = conn.Execute(strSql2)
+strSql3 = "SELECT * FROM SEBV_VeiculoEscala AS Ve INNER JOIN SEBV_Veiculo AS V ON Ve.IdVeiculo = V.Id WHERE IdEscalaParcial='"&IdPrimeiraEscala&"' AND IdBarreiraVol='"&idBarreira&"'"
+set rs3 = conn.Execute(strSql3)
+veiculo = trim(rs3("Modelo"))&" / "&trim(rs3("Placa"))
+
+
+DIM existeJusPrim, existeJusSeg
+function verificaJus()
+  set rs4 = conn.execute("SELECT COUNT (*) AS qt FROM SEBV_Justificativa WHERE IdEscalaParcial = '"&IdPrimeiraEscala& "'AND IdBarreira = '"&IdBarreira&"'")
+  set rs5 = conn.execute("SELECT COUNT (*) AS qt FROM SEBV_Justificativa WHERE IdEscalaParcial = '"&IdSegundaEscala& "'AND IdBarreira = '"&IdBarreira&"'")
+    if rs4("qt") > 0 then
+      existeJusPrim = true
+    elseIf rs4("qt") = 0 then
+      existeJusPrim = false
+    elseIf rs5("qt") > 0 then
+      existeJusSeg = true
+    elseIf rs5("qt") = 0 then
+      existeJusSeg = false
+    else
+    end if    
+    rs4.close
+    rs5.close
+    set rs4 = Nothing
+    set rs5 = Nothing
+end function
+verificaJus()
+
+DIM jusPrim, jusSeg, rsPrim, rsSeg
+function retornaJus()
+  set rsPrim = conn.execute("SELECT TOP 1 * FROM SEBV_Justificativa WHERE IdEscalaParcial = '"&IdPrimeiraEscala&"' AND IdBarreira = '"&idBarreira&"'")
+  set rsSeg = conn.execute("SELECT TOP 1 * FROM SEBV_Justificativa WHERE IdEscalaParcial = '"&IdSegundaEscala&"' AND IdBarreira = '"&idBarreira&"'")
+  jusPrim = false
+  jusSeg = false
+  if not rsPrim.EOF then
+    if rsPrim("IdBarreira") <> "" then
+      jusPrim = true
+    end if
+  end if
+  if not rsSeg.EOF then
+    if rsSeg("IdBarreira") <> "" then
+      jusSeg = true
+    else 
+    end if
+  end if
+end function
+retornaJus()
 
 
 set pdf=CreateJsObject("FPDF")
@@ -86,15 +128,25 @@ pdf.Text 135, 45,  "VEÍCULO: "
 pdf.SetFont "Helvetica","",10
 pdf.Text 152, 45, veiculo
 
-
+'JUSTIFICATIVA 
 pdf.SetFont "Helvetica","",10
+if jusPrim = true then
+pdf.SetXY 10, 47
+pdf.SetFont "Helvetica","B",10
+pdf.setfillcolor 235
+pdf.Cell 190,4,"JUSTIFICATIVA",1,0,"C",1
+pdf.SetFont "Helvetica","",9
+pdf.Ln()
+pdf.Cell 190,5,""&rsPrim("Descricao")&"",1,0,"L"
+     
+else
 'BLOCO 01 SERVIDORES 1 -------------------------------------------------------------------------------------
 pdf.SetXY 10, 47
 pdf.SetFont "Helvetica","B",10
 pdf.setfillcolor 235
 pdf.Cell 150,4,"SERVIDOR",1,0,"C",1
 pdf.Cell 40,4,"MATRÍCULA",1,0,"C",1
-pdf.SetFont "Helvetica","",10
+pdf.SetFont "Helvetica","",9
 pdf.Ln()
 
 'Create results loop
@@ -110,7 +162,7 @@ pdf.Cell 40,5,""&trim(mat1)&"-"&trim(vinc1)&"",1,0,"L"
 pdf.Ln() 
 rs1.movenext
 wend
-
+END IF
 'BLOCO 02 ESCALA 1  -------------------------------------------------------------------------------------
 
 pdf.SetXY 10, 63
@@ -121,7 +173,7 @@ pdf.Cell 20,4,"Saída",1,0,"C",1
 pdf.Cell 20,4,"Chegada",1,0,"C",1
 pdf.Cell 90,4,"INTINERÁRIO/SERVIÇO",1,0,"C",1
 pdf.Cell 40,4,"MUNICÍPIO",1,0,"C",1
-pdf.SetFont "Helvetica","",10
+pdf.SetFont "Helvetica","",9
 pdf.Ln()
 'Create results loop
 while not ObjRst.EOF
@@ -145,8 +197,8 @@ mu1=ObjRst("MunicipioDesc")
 pdf.Cell 20,4,""&dt1&"",1,0,"L"
 pdf.Cell 20,4,""&hs1&"",1,0,"L"
 pdf.Cell 20,4,""&ch1&"",1,0,"L"
-pdf.Cell 90,4,""&it1&"",1,0,"L"
-pdf.Cell 40,4,""&mu1&"",1,0,"L"
+pdf.Cell 90,4,""&left(it1,52)&"",1,0,"L"
+pdf.Cell 40,4,""&left(mu1,20)&"",1,0,"L"
 'Add Line Break
 pdf.Ln() 
 ObjRst.movenext
@@ -156,6 +208,14 @@ wend
 pdf.SetFont "Helvetica","B",10
 pdf.Text 10, 137, "2° ESCALA DE BARREIRA VOLANTE"
 pdf.SetXY 10, 139
+'JUSTIFICATIVA 2
+if jusSeg = true then
+pdf.setfillcolor 235
+pdf.Cell 190,4,"JUSTIFICATIVA",1,0,"C",1
+pdf.SetFont "Helvetica","",10
+pdf.Ln()
+pdf.Cell 190,5,""&rsSeg("Descricao")&"",1,0,"L"
+else
 pdf.setfillcolor 235
 pdf.Cell 150,4,"SERVIDOR",1,0,"C",1
 pdf.Cell 40,4,"MATRÍCULA",1,0,"C",1
@@ -175,7 +235,7 @@ pdf.Cell 40,5,""&trim(mat2)&"-"&trim(vinc2)&"",1,0,"L"
 pdf.Ln() 
 rs2.movenext
 wend
-
+end if
 ' BLOCO 04 ESCALA 2 ----------------------------------------------------------------------------
 
 pdf.SetXY 10, 155
@@ -186,7 +246,7 @@ pdf.Cell 20,4,"Saída",1,0,"C",1
 pdf.Cell 20,4,"Chegada",1,0,"C",1
 pdf.Cell 90,4,"INTINERÁRIO/SERVIÇO",1,0,"C",1
 pdf.Cell 40,4,"MUNICÍPIO",1,0,"C",1
-pdf.SetFont "Helvetica","",10
+pdf.SetFont "Helvetica","",9
 pdf.Ln()
 while not ObjRst2.EOF
 'Example Data 
@@ -209,8 +269,8 @@ mu2=ObjRst2("MunicipioDesc")
 pdf.Cell 20,4,""&dt2&"",1,0,"L"
 pdf.Cell 20,4,""&hs2&"",1,0,"L"
 pdf.Cell 20,4,""&ch2&"",1,0,"L"
-pdf.Cell 90,4,""&it2&"",1,0,"L"
-pdf.Cell 40,4,""&mu2&"",1,0,"L"
+pdf.Cell 90,4,""&left(it2,52)&"",1,0,"L"
+pdf.Cell 40,4,""&left(mu2,20)&"",1,0,"L"
 'Add Line Break
 pdf.Ln() 
 ObjRst2.movenext
@@ -252,7 +312,7 @@ Function apData(data)
   apData = Day(data) & " de " & mes & " de " & Year(data)
 End Function
 
-pdf.Text 120, 280, regionaldesc&" - TO, "& apData(DATE)
+pdf.Text 120, 280, session("regionalFunc")&" - TO, "& apData(DATE)
 
 '// fechando o pdf
 pdf.Close()

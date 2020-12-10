@@ -78,9 +78,12 @@ function mensagem(resp) {
           <td ><%=ObjRst("DataTermino")%></td>  
           <td ><%=UCASE(ObjRst("MesRef"))%></td>             
           <td>
+          <%if autorizado = true then%>
             <a href="crud_ep.asp?id=<%=ObjRst("Id")%>&operacao=2" class="btn btn-danger btn-sm" alt="Desativar EP">
               <i class="fas fa-trash"></i>
             </a>
+          <%else 
+          end if%>
           </td>
         </tr>
       <% 

@@ -27,7 +27,7 @@
 	end if
 	
 	function inserir()
-		on error resume next		
+		on error resume next	
 		Set rs = conn.Execute("INSERT INTO SEBV_RotaEscala (IdBarreiraVol, IdRota, IdEscalaParcial, DiaEscala, HoraSaida, HoraChegada, Situacao) VALUES ('"&idBarreira&"','"&idRota&"','"&idEscalaParcial&"','"&diaEsc&"','"&horaIni&"','"&horaFin&"','Vinculado')")
 		if err <> 0 then
 		%>

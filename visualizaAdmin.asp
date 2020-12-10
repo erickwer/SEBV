@@ -204,17 +204,74 @@ pdf.Ln()
 ObjRst.movenext
 wend
 
+
+data =  Request.QueryString("Data")
+data = cdate (data) 
+
+Function apData(data)
+  dia_semana = WeekDay(data)
+  Select Case dia_semana
+  Case 1 : dia_semana = "Domingo"
+  Case 2 : dia_semana = "Segunda-Feira"
+  Case 3 : dia_semana = "Terça-Feira"
+  Case 4 : dia_semana = "Quarta-Feira"
+  Case 5 : dia_semana = "Quinta-Feira"
+  Case 6 : dia_semana = "Sexta-Feira"
+  Case 7 : dia_semana = "Sábado"
+  End Select
+  mes = Month(data)
+  Select Case mes
+  Case 1 : mes = "Janeiro"
+  Case 2 : mes = "Fevereiro"
+  Case 3 : mes = "Março"
+  Case 4 : mes = "Abril"
+  Case 5 : mes = "Maio"
+  Case 6 : mes = "Junho"
+  Case 7 : mes = "Julho"
+  Case 8 : mes = "Agosto"
+  Case 9 : mes = "Setembro"
+  Case 10 : mes = "Outubro"
+  Case 11 : mes = "Novembro"
+  Case 12 : mes = "Dezembro"
+  End Select
+  apData = Day(data) & " de " & mes & " de " & Year(data)
+End Function
+
+pdf.Text 120, 280, session("regionalFunc")&" - TO, "& apData(DATE)
+
+
+'// adcionando página
+pdf.AddPage()
+
+
+
+'// setando grossura da linha
+pdf.SetLineWidth(0.3)
+
+pdf.Image logoTo, 105, 5, 45, 20, "JPG"
+pdf.Image logoAdapec, 60, 5, 40, 20, "JPG"
+
+'// setando linhas, reapare que, as medidas são feitas em x1, y1, x2 e y2, començando no ponto inicial de x e y e finalizando nos mesmo.
+'pdf.Line "7","50","201","50"
+'// criamos aki uma linha horizontal, a linha pode ser feita de qualquer jeito, vertical, diagonal e td mais, somente setando os valores de x e y.
+
+'// escrevendo um texto
+'// setando fonte e tamanho
+pdf.SetFont "Helvetica","B",12
+pdf.Text "58","32","ESCALA DE TRABALHO DA BARREIRA VOLANTE"
+pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE 2020"
+
 'BLOCO 03 SERVIDORES 2 ---------------------------------------------------------------------'
 pdf.SetFont "Helvetica","B",10
-pdf.Text 10, 137, "2° ESCALA DE BARREIRA VOLANTE"
-pdf.SetXY 10, 139
+pdf.Text 10, 45, "2° ESCALA DE BARREIRA VOLANTE"
+pdf.SetXY 10, 47
 'JUSTIFICATIVA 2
 if jusSeg = true then
 pdf.setfillcolor 235
 pdf.Cell 190,4,"JUSTIFICATIVA",1,0,"C",1
 pdf.SetFont "Helvetica","",10
 pdf.Ln()
-pdf.Cell 190,5,""&rsSeg("Descricao")&"",1,0,"L"
+pdf.MultiCell 190,5,""&rsSeg("Descricao")&"",1,0,"L"
 else
 pdf.setfillcolor 235
 pdf.Cell 150,4,"SERVIDOR",1,0,"C",1
@@ -238,7 +295,7 @@ wend
 end if
 ' BLOCO 04 ESCALA 2 ----------------------------------------------------------------------------
 
-pdf.SetXY 10, 155
+pdf.SetXY 10, 63
 pdf.SetFont "Helvetica","B",10
 pdf.setfillcolor 235
 pdf.Cell 20,4,"Data",1,0,"C",1
@@ -279,38 +336,6 @@ wend
 pdf.SetXY 10, 250
 pdf.Line 70,250,150,250
 pdf.Text 95, 255, "RESPONSÁVEL"
-
-data =  Request.QueryString("Data")
-data = cdate (data) 
-
-Function apData(data)
-  dia_semana = WeekDay(data)
-  Select Case dia_semana
-  Case 1 : dia_semana = "Domingo"
-  Case 2 : dia_semana = "Segunda-Feira"
-  Case 3 : dia_semana = "Terça-Feira"
-  Case 4 : dia_semana = "Quarta-Feira"
-  Case 5 : dia_semana = "Quinta-Feira"
-  Case 6 : dia_semana = "Sexta-Feira"
-  Case 7 : dia_semana = "Sábado"
-  End Select
-  mes = Month(data)
-  Select Case mes
-  Case 1 : mes = "Janeiro"
-  Case 2 : mes = "Fevereiro"
-  Case 3 : mes = "Março"
-  Case 4 : mes = "Abril"
-  Case 5 : mes = "Maio"
-  Case 6 : mes = "Junho"
-  Case 7 : mes = "Julho"
-  Case 8 : mes = "Agosto"
-  Case 9 : mes = "Setembro"
-  Case 10 : mes = "Outubro"
-  Case 11 : mes = "Novembro"
-  Case 12 : mes = "Dezembro"
-  End Select
-  apData = Day(data) & " de " & mes & " de " & Year(data)
-End Function
 
 pdf.Text 120, 280, session("regionalFunc")&" - TO, "& apData(DATE)
 

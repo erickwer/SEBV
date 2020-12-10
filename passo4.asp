@@ -21,7 +21,7 @@ if autorizado = true then%>
  idBarreira = request("idb")
 
 function RetornaIdEscalas()
-	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"'")
+	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' AND Status = 1")
 	  do while not objSql.EOF
 		  if objSql("EscalaDesc") = "1" Then
 			  IdPrimeiraEscala = objSql("Id")

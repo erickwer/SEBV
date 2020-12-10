@@ -40,7 +40,7 @@ function RegionalFuncionario()
 RegionalFuncionario()
 
 function RetornaIdEscalas()
-	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"'")
+    Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' AND Status = '1'")
 	  do while not objSql.EOF
 		  if objSql("EscalaDesc") = "1" Then
 			  IdPrimeiraEscala = objSql("Id")
@@ -58,6 +58,7 @@ function RetornaIdEscalas()
 RetornaIdEscalas()
 
   strSQL = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdPrimeiraEscala&"' AND Situacao = 'Vinculado' AND RegionalDesc = '"&session("regionalFunc")&"' AND Ep.MesRef='"&session("mesRef")&"' ORDER BY DiaEscala"
+  
   set ObjRst = conn.Execute(strSQL)		
   strSQL2 = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdSegundaEscala&"' AND Situacao = 'Vinculado' AND RegionalDesc = '"&session("regionalFunc")&"' AND Ep.MesRef='"&session("mesRef")&"' ORDER BY DiaEscala"
   set ObjRst2 = conn.Execute(strSQL2)			
@@ -387,7 +388,7 @@ function avancar(){
             <td ><%If Len(Day(ObjRst2("DiaEscala"))) <= 1 and Len(Month(ObjRst2("DiaEscala"))) <= 1 then %>
                 0<%=(Day(ObjRst2("DiaEscala")))%>/0<%=(Month(ObjRst2("DiaEscala")))%>
               <%elseIf Len(Day(ObjRst2("DiaEscala"))) <= 1 and Len(Month(ObjRst2("DiaEscala"))) <> 1 then%>
-                0<%=(Day(ObjRst("DiaEscala")))%>/<%=(Month(ObjRst2("DiaEscala")))%>
+                0<%=(Day(ObjRst2("DiaEscala")))%>/<%=(Month(ObjRst2("DiaEscala")))%>
               <%elseIf Len(Day(ObjRst2("DiaEscala"))) > 1 and Len(Month(ObjRst2("DiaEscala"))) <= 1 then%>
                 <%=(Day(ObjRst2("DiaEscala")))%>/0<%=(Month(ObjRst2("DiaEscala")))%>
               <%else%>

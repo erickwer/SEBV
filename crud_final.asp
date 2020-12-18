@@ -2,17 +2,18 @@
   <!--#include file ="lib/conexao.asp"-->
   <% 	
 	response.Charset="utf-8"
-	dim descricao, idMun, op, idRota, idBarreiraUrl, mesRef, IdPrimeiraEscala
+	dim descricao, idMun, op, idRota, idBarreiraUrl, mesRef, IdPrimeiraEscala, anoEsc
 	mesRef = trim(request("mesRef"))
 	status=1
 	op = request("op")	
 	idBarreiraUrl = request("idb")
 
 function RetornaIdEscalas()
-	Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&mesRef&"'")
+	Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' and Status='1'")
 	do while not objSql.EOF
 		if objSql("EscalaDesc") = "1" Then
 			IdPrimeiraEscala = objSql("Id")
+			anoEsc = YEAR(objSql("DataInicio"))
 		elseIf objSql("EscalaDesc") = "2" Then
 			IdSegundaEscala = objSql("Id")
 		else
@@ -40,11 +41,10 @@ RetornaIdEscalas()
 	
 	function liberar()
 		on error resume next
-		Set rs1 = conn.Execute("UPDATE SEBV_ServidoresEsc SET Situacao = 'Vinculado' FROM SEBV_ServidoresEsc AS SE INNER JOIN SEBV_EscalaParcial EP ON SE.IdEscalaParcial = EP.Id  WHERE SE.IdBarreira = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' ")
-		Set rs2 = conn.Execute("UPDATE SEBV_RotaEscala SET Situacao = 'Vinculado' FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial EP ON RE.IdEscalaParcial = EP.Id  WHERE RE.IdBarreiraVol = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' ")
-		Set rs4 = conn.Execute("UPDATE SEBV_Justificativa SET Situacao = 'Vinculado' FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial EP ON RE.IdEscalaParcial = EP.Id  WHERE RE.IdBarreiraVol = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' ")
+		Set rs1 = conn.Execute("UPDATE SEBV_ServidoresEsc SET Situacao = 'Vinculado' FROM SEBV_ServidoresEsc AS SE INNER JOIN SEBV_EscalaParcial EP ON SE.IdEscalaParcial = EP.Id  WHERE SE.IdBarreira = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' AND YEAR(EP.DataInicio)='"&anoEsc&"' ")
+		Set rs2 = conn.Execute("UPDATE SEBV_RotaEscala SET Situacao = 'Vinculado' FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial EP ON RE.IdEscalaParcial = EP.Id  WHERE RE.IdBarreiraVol = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' AND YEAR(EP.DataInicio)='"&anoEsc&"'")
+		Set rs4 = conn.Execute("UPDATE SEBV_Justificativa SET Situacao = 'Vinculado' FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial EP ON RE.IdEscalaParcial = EP.Id  WHERE RE.IdBarreiraVol = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' AND YEAR(EP.DataInicio)='"&anoEsc&"' ")
 		Set rs3 = conn.Execute("DELETE FROM SEBV_VeiculoEscala WHERE IdBarreiraVol = '"&idBarreiraUrl&"' AND IdEscalaParcial = '"&IdPrimeiraEscala&"'")
-		
 		
 		if err <> 0 then
 		%>
@@ -54,7 +54,6 @@ RetornaIdEscalas()
             </script>
 		<%
 		  else
-		  	
 		%>	
 			<script>
 			window.location.assign('relatorio.asp?msg=ok');

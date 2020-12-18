@@ -27,8 +27,8 @@
 	function inserir()
 		on error resume next		
 		Set rs = conn.Execute("INSERT INTO SEBV_VeiculoEscala (IdEscalaParcial, IdBarreiraVol, IdVeiculo, Status) VALUES ('"&idPrimeiraEscala&"','"&idBarreira&"','"&idVeiculo&"','"&Status&"')")
-		set rs1 = conn.Execute("UPDATE SEBV_ServidoresEsc SET Situacao = 'Fechado' FROM SEBV_ServidoresEsc AS SE INNER JOIN SEBV_EscalaParcial EP ON SE.IdEscalaParcial = EP.Id  WHERE SE.IdBarreira = '"&idBarreira&"' AND MesRef = '"&session("mesRef")&"' ")
-			Set rs2 = conn.Execute("UPDATE SEBV_RotaEscala SET Situacao = 'Fechado' FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial EP ON RE.IdEscalaParcial = EP.Id  WHERE RE.IdBarreiraVol = '"&idBarreira&"' AND MesRef = '"&session("mesRef")&"' ")
+		set rs1 = conn.Execute("UPDATE SEBV_ServidoresEsc SET Situacao = 'Fechado' FROM SEBV_ServidoresEsc AS SE INNER JOIN SEBV_EscalaParcial EP ON SE.IdEscalaParcial = EP.Id  WHERE SE.IdBarreira = '"&idBarreira&"' AND MesRef = '"&session("mesRef")&"' AND YEAR(EP.DataInicio)='"&session("anoRef")&"' ")
+		Set rs2 = conn.Execute("UPDATE SEBV_RotaEscala SET Situacao = 'Fechado' FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial EP ON RE.IdEscalaParcial = EP.Id  WHERE RE.IdBarreiraVol = '"&idBarreira&"' AND MesRef = '"&session("mesRef")&"' AND YEAR(EP.DataInicio)='"&session("anoRef")&"' ")
 		if err <> 0 then
 		%>
 			<script>
@@ -39,7 +39,7 @@
 		  else
 		%>
 			<script>
-			window.open('visualiza.asp?idb=<%=idBarreira%>&ide1=<%=idPrimeiraEscala%>&ide2=<%=idSegundaEscala%>');
+			window.open('visualizaAdmin.asp?idb=<%=idBarreira%>&ide1=<%=idPrimeiraEscala%>&ide2=<%=idSegundaEscala%>');
 			window.location.assign('index.asp?idUsu=<%=session("idUsu")%>', '_blank');
 			</script>
          <%

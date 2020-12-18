@@ -3,16 +3,18 @@
 <!--#include file="fpdf/fpdf.asp"-->
 <%
 '// criando o pdf
-dim IdPrimeiraEscala, IdSegundaEscala, idBarreira, mesRef, regionaldesc
+dim IdPrimeiraEscala, IdSegundaEscala, idBarreira, mesRef, regionaldesc, mesEsc
 IdPrimeiraEscala = request("ide1")
 IdSegundaEscala = request("ide2")
 idBarreira = request("idb")
+ano = request("Ano")
 
 function RetornaIdEscalas()
-	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&mesRef&"' and Status='1'")
+	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&mesRef&"' AND YEAR(DataInicio)='"&ano&"' and Status='1'")
 	  do while not objSql.EOF
 		  if objSql("EscalaDesc") = "1" Then
 			  IdPrimeiraEscala = objSql("Id")
+        anoEsc = YEAR(objSql("DataInicio"))
 		  elseIf objSql("EscalaDesc") = "2" Then
 			  IdSegundaEscala = objSql("Id")
 		  else
@@ -117,7 +119,7 @@ pdf.Image logoAdapec, 60, 5, 40, 20, "JPG"
 '// setando fonte e tamanho
 pdf.SetFont "Helvetica","B",12
 pdf.Text "58","32","ESCALA DE TRABALHO DA BARREIRA VOLANTE"
-pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE 2020"
+pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE "&anoEsc&""
 
 '// na linha acima setamos primeiro a função Text, depois aonde começamos a escrever apartir do x e y e por fim o texto a ser adcionado
 '// presta-se atenção aki, pois quem precisa fazer uma leitura de banco de dados ou resgatar uma session para ser impressa no pdf, n se pode usar as ' ' na função de texto
@@ -259,7 +261,7 @@ pdf.Image logoAdapec, 60, 5, 40, 20, "JPG"
 '// setando fonte e tamanho
 pdf.SetFont "Helvetica","B",12
 pdf.Text "58","32","ESCALA DE TRABALHO DA BARREIRA VOLANTE"
-pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE 2020"
+pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE "&mesEsc&""
 
 'BLOCO 03 SERVIDORES 2 ---------------------------------------------------------------------'
 pdf.SetFont "Helvetica","B",10

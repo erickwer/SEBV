@@ -49,7 +49,7 @@ if autorizado = true then%>
     </div>
     <div class="card-body text-center">
       <p>Seja bem-vindo ao módulo de cadastro de Escalas de Barreiras Volante. Aqui você pode definir os servidores para as escalas das Barreiras Volantes da sua regional.</p>
-      <p style="color:#17A2B8"> Data limite para a Escala de <%=UCASE(session("mesRef") )%>: <%=dataLimite%> <br> Dias restantes: <%=dias%> </p>
+      <p style="color:#17A2B8"> Data limite para a Escala de <%=UCASE(session("mesRef"))%>: <%=dataLimite%> <br> Dias restantes: <%=dias%> </p>
       <p>Clique no botão abaixo para iniciar o processo de cadastro.</p>
       <a href="passo1.asp" class="btn btn-primary btn-icon-split">
         <span class="icon text-white-50">

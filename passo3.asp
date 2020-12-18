@@ -13,9 +13,7 @@ if autorizado = true then%>
 <%elseIf autorizado = false then %>
   <!--#include file="base2.asp"-->
 <%end if%>
-<%
-dim nomeFunc, regionalFunc, IdPrimeiraEscala, IdSegundaEscala, existeCad, idBarreira
-
+<% dim nomeFunc, regionalFunc, IdPrimeiraEscala, IdSegundaEscala, existeCad, idBarreira
   municipioId = request.form("municipio")
   descricao = request.form("descricao")
   resp = request("resp")
@@ -40,7 +38,7 @@ function RegionalFuncionario()
 RegionalFuncionario()
 
 function RetornaIdEscalas()
-    Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' AND Status = '1'")
+    Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' and Status='1'")
 	  do while not objSql.EOF
 		  if objSql("EscalaDesc") = "1" Then
 			  IdPrimeiraEscala = objSql("Id")
@@ -57,16 +55,14 @@ function RetornaIdEscalas()
       
 RetornaIdEscalas()
 
-  strSQL = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdPrimeiraEscala&"' AND Situacao = 'Vinculado' AND RegionalDesc = '"&session("regionalFunc")&"' AND Ep.MesRef='"&session("mesRef")&"' ORDER BY DiaEscala"
-  
+  strSQL = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdPrimeiraEscala&"' AND Situacao = 'Vinculado' AND RegionalDesc = '"&session("regionalFunc")&"' AND Ep.MesRef='"&session("mesRef")&"' AND Re.IdBarreiraVol = '"&IdBarreira&"' ORDER BY DiaEscala"
   set ObjRst = conn.Execute(strSQL)		
-  strSQL2 = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdSegundaEscala&"' AND Situacao = 'Vinculado' AND RegionalDesc = '"&session("regionalFunc")&"' AND Ep.MesRef='"&session("mesRef")&"' ORDER BY DiaEscala"
+  strSQL2 = "SELECT DiaEscala, Re.Id, HoraSaida, HoraChegada, Ro.Descricao, M.MunicipioDesc FROM SEBV_RotaEscala AS Re INNER JOIN SEBV_Rota AS Ro ON Re.IdRota=Ro.Id INNER JOIN Municipio AS M ON Ro.MunicipioId=M.MunicipioId INNER JOIN SEBV_EscalaParcial AS Ep On Re.IdEscalaParcial = Ep.Id INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId WHERE Re.IdEscalaParcial = '"&IdSegundaEscala&"' AND Situacao = 'Vinculado' AND RegionalDesc = '"&session("regionalFunc")&"' AND Ep.MesRef='"&session("mesRef")&"' AND Re.IdBarreiraVol = '"&IdBarreira&"' ORDER BY DiaEscala"
   set ObjRst2 = conn.Execute(strSQL2)			
   strSql1 = "SELECT R.Id, R.Descricao, M.MunicipioDesc, Reg.RegionalDesc FROM SEBV_Rota AS R INNER JOIN Municipio AS M ON R.MunicipioId = M.MunicipioId INNER JOIN Regional AS Reg ON M.MunicipioRegionalId = Reg.RegionalId WHERE RegionalDesc = '"&session("regionalFunc")&"'"
   set rs1 = conn.Execute(strSql1)
   strSql2 = "SELECT R.Id, R.Descricao, M.MunicipioDesc, Reg.RegionalDesc FROM SEBV_Rota AS R INNER JOIN Municipio AS M ON R.MunicipioId = M.MunicipioId INNER JOIN Regional AS Reg ON M.MunicipioRegionalId = Reg.RegionalId WHERE RegionalDesc = '"&session("regionalFunc")&"'"
   set rs2 = conn.Execute(strSql2)
-
 
   function verificaExistencia(matricula)
       set rs =  conn.Execute("SELECT COUNT (*) as qt FROM SEBV_ServidoresEsc AS s INNER JOIN SEBV_EscalaParcial AS p ON s.IdEscalaParcial = p.Id WHERE s.Matricula = '"&matricula&"'AND p.MesRef='"&session("mesRef")&"'")
@@ -89,7 +85,6 @@ RetornaIdEscalas()
       rs.close
       set rs = Nothing
   end function 
-  
 %>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <script>

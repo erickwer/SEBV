@@ -15,7 +15,7 @@ if autorizado = true then%>
   <!--#include file="base2.asp"-->
 <%end if%>
 <%
-dim nomeFunc, regionalFunc, IdPrimeiraEscala, IdSegundaEscala, existeCad, idBarreira, existeCadEscala, existeJusPrim, existeJusSeg, jusPrim, jusSeg, rsPrim, rsSeg
+dim nomeFunc, regionalFunc, IdPrimeiraEscala, mesEsc, IdSegundaEscala, existeCad, idBarreira, existeCadEscala, existeJusPrim, existeJusSeg, jusPrim, jusSeg, rsPrim, rsSeg
   municipioId = request.form("municipio")
   descricao = request.form("descricao")
   resp = request("resp")
@@ -42,10 +42,11 @@ function RegionalFuncionario()
 RegionalFuncionario()
 
 function RetornaIdEscalas()
-	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' and Status='1'")
+	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' and Status='1'")
 	  do while not objSql.EOF
 		  if objSql("EscalaDesc") = "1" Then
 			  IdPrimeiraEscala = objSql("Id")
+        mesEsc = objSql("MesRef")
 		  elseIf objSql("EscalaDesc") = "2" Then
 			  IdSegundaEscala = objSql("Id")
 		  else
@@ -61,9 +62,9 @@ function RetornaIdEscalas()
 
   strSQL = "SELECT F.MatriculaNova, F.VinculoMatricula, F.Nome, F.LotacaoComp, C.Nome [Cargo], R.RegionalDesc,  M.MunicipioDesc FROM CadFunc AS F INNER JOIN HistCargo AS H ON F.Matricula = H.Matricula INNER JOIN Cargo AS C ON H.CodCargo = C.Codcargo INNER JOIN Municipio AS M ON F.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId = R.RegionalId WHERE (F.SitFuncional = 'ATIVO') AND (C.CodCargo in(221,222)) AND F.LotacaoComp = 'BARREIRA FIXA'  and h.DTTermino is null and R.RegionalDesc = '"&session("regionalFunc")&"' ORDER BY RegionalDesc"
   set ObjRst = conn.Execute(strSQL)			
-  strSql1 = "SELECT sb.Id, sb.Matricula, sb.VinculoMat, sb.Situacao, f.Nome, r.RegionalDesc FROM SEBV_ServidoresEsc as sb INNER JOIN CadFunc as f on sb.Matricula = f.MatriculaNova INNER JOIN Municipio as M ON f.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId  INNER JOIN SEBV_EscalaParcial AS ep ON sb.IdEscalaParcial = ep.Id  WHERE IdEscalaParcial='"&IdPrimeiraEscala&"' AND RegionalDesc ='"&session("regionalFunc")&"' AND ep.MesRef='"&session("mesRef")&"' AND Situacao = 'Vinculado'"
+  strSql1 = "SELECT sb.Id, sb.Matricula, sb.VinculoMat, sb.Situacao, f.Nome, r.RegionalDesc FROM SEBV_ServidoresEsc as sb INNER JOIN CadFunc as f on sb.Matricula = f.MatriculaNova INNER JOIN Municipio as M ON f.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId  INNER JOIN SEBV_EscalaParcial AS ep ON sb.IdEscalaParcial = ep.Id  WHERE IdEscalaParcial='"&IdPrimeiraEscala&"' AND RegionalDesc ='"&session("regionalFunc")&"' AND ep.MesRef='"&session("mesRef")&"' AND Situacao = 'Vinculado' AND sb.IdBarreira ='"&IdBarreira&"'"
   set rs1 = conn.Execute(strSql1)
-  strSql2 = "SELECT sb.Id, sb.Matricula, sb.VinculoMat, sb.Situacao, f.Nome, r.RegionalDesc FROM SEBV_ServidoresEsc as sb INNER JOIN CadFunc as f on sb.Matricula = f.MatriculaNova INNER JOIN Municipio as M ON f.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId  INNER JOIN SEBV_EscalaParcial AS ep ON sb.IdEscalaParcial = ep.Id  WHERE IdEscalaParcial='"&IdSegundaEscala&"' AND RegionalDesc ='"&session("regionalFunc")&"' AND ep.MesRef='"&session("mesRef")&"' AND Situacao = 'Vinculado'"
+  strSql2 = "SELECT sb.Id, sb.Matricula, sb.VinculoMat, sb.Situacao, f.Nome, r.RegionalDesc FROM SEBV_ServidoresEsc as sb INNER JOIN CadFunc as f on sb.Matricula = f.MatriculaNova INNER JOIN Municipio as M ON f.LotacaoOrigem = M.MunicipioId INNER JOIN Regional AS R ON M.MunicipioRegionalId=R.RegionalId  INNER JOIN SEBV_EscalaParcial AS ep ON sb.IdEscalaParcial = ep.Id  WHERE IdEscalaParcial='"&IdSegundaEscala&"' AND RegionalDesc ='"&session("regionalFunc")&"' AND ep.MesRef='"&session("mesRef")&"' AND Situacao = 'Vinculado' AND sb.IdBarreira ='"&IdBarreira&"'"
   set rs2 = conn.Execute(strSql2)
 
   function verificaExistencia(matricula)
@@ -199,11 +200,7 @@ function avancar(){
       <div class="alert alert-danger alert-dismissible" role="alert">
         <h6><i class="fas fa-ban"></i><b> Opa!</b></h6>
         Já existe uma escala cadastrada para essa barreira no mês de <%=UCASE(session("mesRef"))%>!<br>
-        <%if autorizado = false then%>
-          <a href="visualiza.asp?idb=<%=idBarreira%>&ide1=<%=IdPrimeiraEscala%>&ide2=<%=IdSegundaEscala%>" target="_blank" class="btn btn-primary btn-icon-split">
-        <%else%>
-        <a href="visualizaAdmin.asp?idb=<%=idBarreira%>&ide1=<%=IdPrimeiraEscala%>&ide2=<%=IdSegundaEscala%>" target="_blank" class="btn btn-primary btn-icon-split">
-        <%end if%>
+        <a href="visualizaAdmin.asp?idb=<%=idBarreira%>&ide1=<%=IdPrimeiraEscala%>&mesRef=<%=mesEsc%>&ide2=<%=IdSegundaEscala%>" target="_blank" class="btn btn-primary btn-icon-split">
         <span class="icon text-white-50">
           <i class="fas fa-arrow-right"></i>
         </span>
@@ -213,7 +210,6 @@ function avancar(){
     </div>
   </div>
 </div>
-
 <%else%>
 <!-- Modal Justificativa 1 -->
 <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog"

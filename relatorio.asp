@@ -21,31 +21,12 @@ if autorizado = true then%>
 	if ano = "" or ano = " " or ano = "0" then  ano = year(date()) end if	
 	
 	if mes = 0 and ano = 0 then
-	strSQL = "SELECT BV.Id as IdBarreiraVol, RegionalDesc, MesRef, BV.Descricao, YEAR(DataInicio) AS Ano FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial AS EP ON RE.IdEscalaParcial = EP.Id INNER JOIN SEBV_Rota AS R ON R.Id=RE.IdRota INNER JOIN Municipio AS M ON R.MunicipioId = M.MunicipioId INNER JOIN Regional AS REG ON M.MunicipioRegionalId = REG.RegionalId INNER JOIN SEBV_BarreiraVolante AS BV ON BV.RegionalId = REG.RegionalId WHERE RE.Situacao = 'Fechado' AND MesRef='"&mesRef&"' AND BV.Status = 1 GROUP By BV.Id, RegionalDesc, MesRef, BV.Descricao, YEAR(DataInicio)"
+	strSQL = "SELECT RegionalDesc, BV.Descricao, MesRef, BV.Id AS IdBarreiraVol,  YEAR(DataInicio) AS Ano FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial  AS p ON RE.IdEscalaParcial = p.Id INNER JOIN SEBV_BarreiraVolante AS BV ON BV.Id = RE.IdBarreiraVol INNER JOIN Regional AS R ON R.RegionalId = BV.RegionalId INNER JOIN SEBV_VeiculoEscala AS VE ON VE.IdBarreiraVol = BV.Id WHERE VE.Status = 1 AND VE.Id is not null AND MesRef='"&mesRef&"' AND Situacao ='Fechado' GROUP BY RegionalDesc, BV.Descricao, MesRef,  BV.Id, YEAR(DataInicio)"
 	else
-	strSQL = "SELECT BV.Id as IdBarreiraVol, RegionalDesc, MesRef, BV.Descricao, YEAR(DataInicio) AS Ano FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial AS EP ON RE.IdEscalaParcial = EP.Id INNER JOIN SEBV_Rota AS R ON R.Id=RE.IdRota INNER JOIN Municipio AS M ON R.MunicipioId = M.MunicipioId INNER JOIN Regional AS REG ON M.MunicipioRegionalId = REG.RegionalId INNER JOIN SEBV_BarreiraVolante AS BV ON BV.RegionalId = REG.RegionalId WHERE RE.Situacao = 'Fechado'AND MesRef='"&mesRef&"' AND YEAR(DataInicio)='"&ano&"' AND BV.Status =1 GROUP By BV.Id, RegionalDesc, MesRef, BV.Descricao, YEAR(DataInicio)"
+	strSQL = "SELECT RegionalDesc, BV.Descricao, MesRef, BV.Id AS IdBarreiraVol,  YEAR(DataInicio) AS Ano FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial  AS p ON RE.IdEscalaParcial = p.Id INNER JOIN SEBV_BarreiraVolante AS BV ON BV.Id = RE.IdBarreiraVol INNER JOIN Regional AS R ON R.RegionalId = BV.RegionalId INNER JOIN SEBV_VeiculoEscala AS VE ON VE.IdBarreiraVol = BV.Id WHERE VE.Status = 1 AND VE.Id is not null AND MesRef='"&mesRef&"' AND YEAR(DataInicio)='"&ano&"' AND Situacao ='Fechado' GROUP BY RegionalDesc, BV.Descricao, MesRef,  BV.Id, YEAR(DataInicio)"
   end if
-  
     set ObjRst = conn.Execute(strSQL)
-
-function RetornaIdEscalas()
-	  Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"+mesRef+"' AND Status='1'")
-	  do while not objSql.EOF
-		  if objSql("EscalaDesc") = "1" Then
-			  IdPrimeiraEscala = objSql("Id")
-		  elseIf objSql("EscalaDesc") = "2" Then
-			  IdSegundaEscala = objSql("Id")
-		  else
-			  response.write("Escala não cadastrada")
-		  End If
-	  objSql.movenext()
-	  loop
-	  objSql.Close
-	  Set objSql = Nothing
-      end function
-      
-  RetornaIdEscalas()
-
+  
 %>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <script>

@@ -7,9 +7,10 @@
 	status=1
 	op = request("op")	
 	idBarreiraUrl = request("idb")
+	anoEsc = request("ano")
 
 function RetornaIdEscalas()
-	Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' and Status='1'")
+	Set objSql =  conn.Execute("SELECT * FROM SEBV_EscalaParcial WHERE MesRef='"&mesRef&"' AND YEAR(DataInicio)='"&anoEsc&"' and Status='1'")
 	do while not objSql.EOF
 		if objSql("EscalaDesc") = "1" Then
 			IdPrimeiraEscala = objSql("Id")

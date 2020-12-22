@@ -7,6 +7,7 @@ dim IdPrimeiraEscala, IdSegundaEscala, idBarreira, mesRef, regionaldesc, mesEsc
 IdPrimeiraEscala = request("ide1")
 IdSegundaEscala = request("ide2")
 idBarreira = request("idb")
+mesRef = request("mesRef")
 ano = request("Ano")
 
 function RetornaIdEscalas()
@@ -119,7 +120,7 @@ pdf.Image logoAdapec, 60, 5, 40, 20, "JPG"
 '// setando fonte e tamanho
 pdf.SetFont "Helvetica","B",12
 pdf.Text "58","32","ESCALA DE TRABALHO DA BARREIRA VOLANTE"
-pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE "&anoEsc&""
+pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE "&ano&""
 
 '// na linha acima setamos primeiro a função Text, depois aonde começamos a escrever apartir do x e y e por fim o texto a ser adcionado
 '// presta-se atenção aki, pois quem precisa fazer uma leitura de banco de dados ou resgatar uma session para ser impressa no pdf, n se pode usar as ' ' na função de texto
@@ -261,7 +262,7 @@ pdf.Image logoAdapec, 60, 5, 40, 20, "JPG"
 '// setando fonte e tamanho
 pdf.SetFont "Helvetica","B",12
 pdf.Text "58","32","ESCALA DE TRABALHO DA BARREIRA VOLANTE"
-pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE "&mesEsc&""
+pdf.Text "83","37","MÊS DE "&UCASE(trim(mesRef))&" DE "&ano&""
 
 'BLOCO 03 SERVIDORES 2 ---------------------------------------------------------------------'
 pdf.SetFont "Helvetica","B",10

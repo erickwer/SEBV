@@ -79,8 +79,8 @@ function RetornaIdEscalas()
       
   function verificaCadastroEscala()
       set rs =  conn.Execute("SELECT COUNT (*) as qt FROM SEBV_RotaEscala AS f INNER JOIN SEBV_EscalaParcial  AS p ON f.IdEscalaParcial = p.Id WHERE f.IdBarreiraVol = '"&idBarreira&"'AND MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' AND Situacao ='Fechado'")
-      set rs2 = conn.Execute("SELECT COUNT (*) AS qt FROM SEBV_Justificativa AS JU INNER JOIN SEBV_EscalaParcial AS EP ON JU.IdEscalaParcial = EP.Id INNER JOIN SEBV_BarreiraVolante AS BV ON JU.IdBarreira = BV.Id WHERE JU.IdBarreira = '"&idBarreira&"' AND MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' AND JU.Situacao = 'Fechado'")
-      if rs("qt") <> 0  OR rs2("qt") <> 0then
+      set rs7 = conn.Execute("SELECT COUNT (*) AS qt FROM SEBV_Justificativa AS JU INNER JOIN SEBV_EscalaParcial AS EP ON JU.IdEscalaParcial = EP.Id INNER JOIN SEBV_BarreiraVolante AS BV ON JU.IdBarreira = BV.Id WHERE JU.IdBarreira = '"&idBarreira&"' AND MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' AND JU.Situacao = 'Fechado'")
+      if rs("qt") <> 0  OR rs7("qt") <> 0then
           existeCadEscala = true
       else 
           existeCadEscala = false

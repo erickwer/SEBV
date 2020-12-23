@@ -44,8 +44,9 @@ RetornaIdEscalas()
 		on error resume next
 		Set rs1 = conn.Execute("UPDATE SEBV_ServidoresEsc SET Situacao = 'Vinculado' FROM SEBV_ServidoresEsc AS SE INNER JOIN SEBV_EscalaParcial EP ON SE.IdEscalaParcial = EP.Id  WHERE SE.IdBarreira = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' AND YEAR(EP.DataInicio)='"&anoEsc&"' ")
 		Set rs2 = conn.Execute("UPDATE SEBV_RotaEscala SET Situacao = 'Vinculado' FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial EP ON RE.IdEscalaParcial = EP.Id  WHERE RE.IdBarreiraVol = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' AND YEAR(EP.DataInicio)='"&anoEsc&"'")
-		Set rs4 = conn.Execute("UPDATE SEBV_Justificativa SET Situacao = 'Vinculado' FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial EP ON RE.IdEscalaParcial = EP.Id  WHERE RE.IdBarreiraVol = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' AND YEAR(EP.DataInicio)='"&anoEsc&"' ")
+		Set rs4 = conn.Execute("UPDATE SEBV_Justificativa SET Situacao = 'Vinculado' FROM SEBV_Justificativa AS JU INNER JOIN SEBV_EscalaParcial EP ON JU.IdEscalaParcial = EP.Id  WHERE JU.IdBarreira = '"&idBarreiraUrl&"' AND MesRef = '"&mesRef&"' AND YEAR(EP.DataInicio)='"&anoEsc&"' ")
 		Set rs3 = conn.Execute("DELETE FROM SEBV_VeiculoEscala WHERE IdBarreiraVol = '"&idBarreiraUrl&"' AND IdEscalaParcial = '"&IdPrimeiraEscala&"'")
+		
 		
 		if err <> 0 then
 		%>

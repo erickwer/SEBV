@@ -21,9 +21,9 @@ if autorizado = true then%>
 	if ano = "" or ano = " " or ano = "0" then  ano = year(date()) end if	
 	
 	if mes = 0 and ano = 0 then
-	strSQL = "SELECT RegionalDesc, BV.Descricao, MesRef, BV.Id AS IdBarreiraVol,  YEAR(DataInicio) AS Ano FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial  AS p ON RE.IdEscalaParcial = p.Id INNER JOIN SEBV_BarreiraVolante AS BV ON BV.Id = RE.IdBarreiraVol INNER JOIN Regional AS R ON R.RegionalId = BV.RegionalId INNER JOIN SEBV_VeiculoEscala AS VE ON VE.IdBarreiraVol = BV.Id WHERE VE.Status = 1 AND VE.Id is not null AND MesRef='"&mesRef&"' AND Situacao ='Fechado' GROUP BY RegionalDesc, BV.Descricao, MesRef,  BV.Id, YEAR(DataInicio)"
-	else
-	strSQL = "SELECT RegionalDesc, BV.Descricao, MesRef, BV.Id AS IdBarreiraVol,  YEAR(DataInicio) AS Ano FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial  AS p ON RE.IdEscalaParcial = p.Id INNER JOIN SEBV_BarreiraVolante AS BV ON BV.Id = RE.IdBarreiraVol INNER JOIN Regional AS R ON R.RegionalId = BV.RegionalId INNER JOIN SEBV_VeiculoEscala AS VE ON VE.IdBarreiraVol = BV.Id WHERE VE.Status = 1 AND VE.Id is not null AND MesRef='"&mesRef&"' AND YEAR(DataInicio)='"&ano&"' AND Situacao ='Fechado' GROUP BY RegionalDesc, BV.Descricao, MesRef,  BV.Id, YEAR(DataInicio)"
+	strSQL = "SELECT RegionalDesc, BV.Descricao, MesRef, BV.Id AS IdBarreiraVol,  YEAR(DataInicio) AS Ano FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial  AS p ON RE.IdEscalaParcial = p.Id INNER JOIN SEBV_BarreiraVolante AS BV ON BV.Id = RE.IdBarreiraVol INNER JOIN Regional AS R ON R.RegionalId = BV.RegionalId INNER JOIN SEBV_VeiculoEscala AS VE ON VE.IdBarreiraVol = BV.Id WHERE VE.Status = 1 AND VE.Id is not null AND MesRef='"&mesRef&"' AND Situacao ='Fechado' GROUP BY RegionalDesc, BV.Descricao, MesRef,  BV.Id, YEAR(DataInicio) UNION SELECT  R.RegionalDesc, BV.Descricao, MesRef, BV.Id,  YEAR(DataInicio) AS Ano FROM SEBV_Justificativa AS JU INNER JOIN SEBV_EscalaParcial AS EP ON JU.IdEscalaParcial = EP.Id INNER JOIN SEBV_BarreiraVolante AS BV ON JU.IdBarreira = BV.Id INNER JOIN Regional As R ON BV.RegionalId = R.RegionalId WHERE  MesRef='"&mesRef&"' AND JU.Situacao = 'Fechado' GROUP BY  MesRef, BV.Descricao,  R.RegionalDesc, BV.Id,  YEAR(DataInicio)"
+  else
+	strSQL = "SELECT RegionalDesc, BV.Descricao, MesRef, BV.Id AS IdBarreiraVol,  YEAR(DataInicio) AS Ano FROM SEBV_RotaEscala AS RE INNER JOIN SEBV_EscalaParcial  AS p ON RE.IdEscalaParcial = p.Id INNER JOIN SEBV_BarreiraVolante AS BV ON BV.Id = RE.IdBarreiraVol INNER JOIN Regional AS R ON R.RegionalId = BV.RegionalId INNER JOIN SEBV_VeiculoEscala AS VE ON VE.IdBarreiraVol = BV.Id WHERE VE.Status = 1 AND VE.Id is not null AND MesRef='"&mesRef&"' AND YEAR(DataInicio)='"&ano&"' AND Situacao ='Fechado' GROUP BY RegionalDesc, BV.Descricao, MesRef,  BV.Id, YEAR(DataInicio) UNION SELECT  R.RegionalDesc, BV.Descricao, MesRef, BV.Id,  YEAR(DataInicio) AS Ano FROM SEBV_Justificativa AS JU INNER JOIN SEBV_EscalaParcial AS EP ON JU.IdEscalaParcial = EP.Id INNER JOIN SEBV_BarreiraVolante AS BV ON JU.IdBarreira = BV.Id INNER JOIN Regional As R ON BV.RegionalId = R.RegionalId WHERE  MesRef='"&mesRef&"'  AND YEAR(DataInicio)='"&ano&"' AND JU.Situacao = 'Fechado' GROUP BY  MesRef, BV.Descricao,  R.RegionalDesc, BV.Id,  YEAR(DataInicio)"
   end if
     set ObjRst = conn.Execute(strSQL)
   
@@ -134,6 +134,7 @@ function mensagem(resp) {
         <th> REGIONAL </th>
         <th> BARREIRA </th>
         <th> MÊS </th>
+        <th> ANO </th>
         <th> OPÇÔES </th>
     </tr>
 </thead>
@@ -146,6 +147,7 @@ function mensagem(resp) {
         <td ><%=ObjRst("RegionalDesc")%></td>
         <td ><%=ObjRst("Descricao")%></td>
         <td ><%=UCASE(ObjRst("MesRef"))%></td>
+        <td ><%=ObjRst("Ano")%></td>
         <td >
           <a class="btn btn-warning btn-sm " alt="Exibir "  onClick="ChamarLink('<%=ObjRst("IdBarreiraVol")%>','<%=ObjRst("MesRef")%>','<%=ObjRst("Ano")%>')"><i class="far fa-eye" aria-hidden="true" ></i></a>
         <%if autorizado = true then%>

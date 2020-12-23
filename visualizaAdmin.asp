@@ -140,7 +140,7 @@ pdf.setfillcolor 235
 pdf.Cell 190,4,"JUSTIFICATIVA",1,0,"C",1
 pdf.SetFont "Helvetica","",9
 pdf.Ln()
-pdf.Cell 190,5,""&rsPrim("Descricao")&"",1,0,"L"
+pdf.MultiCell 190,5,""&rsPrim("Descricao")&"",1,0,"L"
      
 else
 'BLOCO 01 SERVIDORES 1 -------------------------------------------------------------------------------------

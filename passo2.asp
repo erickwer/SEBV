@@ -79,7 +79,8 @@ function RetornaIdEscalas()
       
   function verificaCadastroEscala()
       set rs =  conn.Execute("SELECT COUNT (*) as qt FROM SEBV_RotaEscala AS f INNER JOIN SEBV_EscalaParcial  AS p ON f.IdEscalaParcial = p.Id WHERE f.IdBarreiraVol = '"&idBarreira&"'AND MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' AND Situacao ='Fechado'")
-      if rs("qt") <> 0 then
+      set rs2 = conn.Execute("SELECT COUNT (*) AS qt FROM SEBV_Justificativa AS JU INNER JOIN SEBV_EscalaParcial AS EP ON JU.IdEscalaParcial = EP.Id INNER JOIN SEBV_BarreiraVolante AS BV ON JU.IdBarreira = BV.Id WHERE JU.IdBarreira = '"&idBarreira&"' AND MesRef='"&session("mesRef")&"' AND YEAR(DataInicio)='"&session("anoRef")&"' AND JU.Situacao = 'Fechado'")
+      if rs("qt") <> 0  OR rs2("qt") <> 0then
           existeCadEscala = true
       else 
           existeCadEscala = false
@@ -198,7 +199,7 @@ function avancar(){
     <div class="card-body">      
       <div class="alert alert-danger alert-dismissible" role="alert">
         <h6><i class="fas fa-ban"></i><b> Opa!</b></h6>
-        Já existe uma escala cadastrada para essa barreira no mês de <%=UCASE(session("mesRef"))%>!<br>
+        Já existe uma escala cadastrada para essa barreira no mês de <%=UCASE(session("mesRef"))%> de <%=session("anoRef")%>!<br>
         <a href="visualizaAdmin.asp?idb=<%=idBarreira%>&ide1=<%=IdPrimeiraEscala%>&mesRef=<%=session("mesRef")%>&ide2=<%=IdSegundaEscala%>&Ano=<%=session("anoRef")%>" target="_blank" class="btn btn-primary btn-icon-split">
         <span class="icon text-white-50">
           <i class="fas fa-arrow-right"></i>

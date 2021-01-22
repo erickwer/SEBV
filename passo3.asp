@@ -117,15 +117,6 @@ function mensagem(resp) {
   return false;
 }
 
-function enviarForm1(){   
-    formroute1.operacao.value = 1;
-    formroute1.submit();
-}
-
-function enviarForm2(){   
-    formroute2.operacao.value = 1;
-    formroute2.submit();
-}
 function avancar(){   
   Swal.fire({
   title: 'Deseja continuar?',
@@ -154,7 +145,7 @@ function avancar(){
         </div>
     <div class="card-body">
       
-      <form id="formroute1" name="formroute1" method="POST" action="crud_rota_escala.asp" >
+      <form id="formroute1" name="formroute1" method="POST" action="crud_rota_escala.asp?operacao=1" >
         <input name="operacao" type="hidden" value="" id="operacao"/>
         <input name="idesc" type="hidden" value="<%=IdPrimeiraEscala%>" id="idesc"/>
         <input name="idbar" type="hidden" value="<%=idBarreira%>" id="idbar"/>
@@ -224,7 +215,7 @@ function avancar(){
         </select>
         </div>
         <div class="form-group mt-auto">
-        <button class="btn btn-warning btn-icon-split btn-sm" onClick="enviarForm1(); return false;">
+        <button class="btn btn-warning btn-icon-split btn-sm" >
         <span class="icon text-white-50">
           <i class="fas fa-arrow-right"></i>
         </span>
@@ -284,7 +275,7 @@ function avancar(){
       <h6 class="m-0 font-weight-bold text-primary">Rotas da 2° Escala do Mês de <%=UCASE(session("mesRef"))%></h6>
     </div>
     <div class="card-body">
-      <form id="formroute2" name="formroute2" method="POST" action="crud_rota_escala.asp" >
+      <form id="formroute2" name="formroute2" method="POST" action="crud_rota_escala.asp?operacao=1" >
         <input name="operacao" type="hidden" value="" id="operacao"/>
         <input name="idesc" type="hidden" value="<%=IdSegundaEscala%>" id="idesc"/>
         <input name="idbar" type="hidden" value="<%=idBarreira%>" id="idbar"/>
@@ -354,7 +345,7 @@ function avancar(){
         </select>
         </div>
         <div class="form-group mt-auto">
-        <button class="btn btn-warning btn-icon-split btn-sm" onClick="enviarForm2(); return false;">
+        <button class="btn btn-warning btn-icon-split btn-sm" >
         <span class="icon text-white-50">
           <i class="fas fa-arrow-right"></i>
         </span>

@@ -4,6 +4,7 @@
 	response.Charset="utf-8"
 	dim descricao, op, idEp
 	descricao = request.form("escaladesc")
+	mesRef = Trim(MonthName(Month(request.Form("dataIni"))))
 	dataIni = Trim(request.form("dataIni"))
 	dataFin = Trim(request.form("dataFin"))
 	idEp =  request("id")
@@ -27,7 +28,7 @@
 	
 	function inserir()
 		on error resume next		
-		Set rs = conn.Execute("INSERT INTO SEBV_EscalaParcial (EscalaDesc, DataInicio, DataTermino, MesRef, Status, DataCadastro) VALUES ('"&descricao&"',(Convert(Date,'"&dataIni&"')),(Convert(Date,'"&dataFin&"')),'"&session("mesRef")&"','"&status&"',GETDATE())")
+		Set rs = conn.Execute("INSERT INTO SEBV_EscalaParcial (EscalaDesc, DataInicio, DataTermino, MesRef, Status, DataCadastro) VALUES ('"&descricao&"',(Convert(Date,'"&dataIni&"')),(Convert(Date,'"&dataFin&"')),'"&mesRef&"','"&status&"',GETDATE())")
 		if err <> 0 then
 		%>
 			<script>
